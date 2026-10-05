@@ -1,13 +1,30 @@
 #prepare document to run AI-HDX
-#HHblits profiles for the target sequence (1XYN ↔ 1KS5 swap mutants)
+#HHblits profiles for the target sequence (1XYN ↔ 1KS5 swap mutants). hhm filr preparation.
 #Install HHBlits via conda
 conda env list                 # "hhblits" should be listed
 conda activate hhblits
 hhblits -h | head -3           # should print the HHblits version
 conda deactivat
 #If the environment is missing, create it as in the AI-HDX documentation
-'
+
 conda create -n hhblits
 conda activate hhblits
 conda install -c conda-forge -c bioconda hhsuite
-'
+
+#prepare the input file
+Put FASTA files in input/. The name is the header text before the first | or space, for example >1KS5_M02 | ... becomes 1KS5_M02. Names must be unique.
+Rebuild: 
+python3 make_inputs.py
+#submit
+bash submit.sh
+The results are the 12 files in hhm_data/ . These .hhm files are the MSA input for the AI-HDX embedding and prediction steps.
+
+#Extract amino acid surface area from PDB file (dssp file preparation)
+conda create -n mypython3
+conda activate mypython3
+python codes/accessScore.py PDB_ID PDB/PDB_ID_file.pdb
+#A PDB_ID_file.pdb.dssp.txt will be created in the same directory that has the pdb file.
+
+#Combine MSA encoding and surface accessibility and AA properties into a matrix
+conda activate mypython3
+python codes/MSA_embedding.py <hhm file> <pdb.dssp.txt> <output.vector.txt>
