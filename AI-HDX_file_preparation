@@ -1,0 +1,13 @@
+#prepare document to run AI-HDX
+#HHblits profiles for the target sequence (1XYN ↔ 1KS5 swap mutants)
+#Install HHBlits via conda
+conda env list                 # "hhblits" should be listed
+conda activate hhblits
+hhblits -h | head -3           # should print the HHblits version
+conda deactivat
+#If the environment is missing, create it as in the AI-HDX documentation
+'
+conda create -n hhblits
+conda activate hhblits
+conda install -c conda-forge -c bioconda hhsuite
+'
